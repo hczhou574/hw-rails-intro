@@ -10,11 +10,6 @@ class MoviesController < ApplicationController
     def index
       @movies = Movie.all
       @all_ratings = Movie.all_ratings
-      if params[:commit]== 'Reset'
-        session[:filter_sort]=nil
-        session[:filter_rating]=nil
-        puts 'reset'
-      end
       if params[:sort].in? %w[title]
         @hilite = "title"
         session[:filter_sort] = params[:sort]
