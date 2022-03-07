@@ -5,9 +5,40 @@ class MoviesController < ApplicationController
       @movie = Movie.find(id) # look up movie by unique ID
       # will render app/views/movies/show.<extension> by default
     end
-  
+ 
+    
     def index
       @movies = Movie.all
+      @all_ratings = Movie.all_ratings
+      if params[:commit]== 'Reset'
+        session[:filter_sort]=nil
+        session[:filter_rating]=nil
+        puts 'reset'
+      end
+      if params[:sort].in? %w[title]
+        @hilite = "title"
+        session[:filter_sort] = params[:sort]
+        @movies = Movie.order(params[:sort]) 
+      elsif params[:sort].in? %w[release_date]
+        @hilite =  "release_date"
+        session[:filter_sort] = params[:sort]
+        @movies = Movie.order(params[:sort])
+      else
+        if session[:filter_sort]!=nil
+          @movies = Movie.order(session[:filter_sort])
+          @hilite = session[:filter_sort]
+        end
+      end
+      if params[:ratings] != nil
+        session[:filter_rating] = params[:ratings]
+        @ratings_to_show = params[:ratings].keys
+        @movies = Movie.with_ratings(@ratings_to_show, params[:sort])
+      else 
+        if session[:filter_rating] != nil
+          @ratings_to_show = session[:filter_rating].keys
+          @movies = Movie.with_ratings(@ratings_to_show, params[:sort])
+        end
+      end
     end
   
     def new
