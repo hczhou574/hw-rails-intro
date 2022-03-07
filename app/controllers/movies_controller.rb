@@ -27,11 +27,11 @@ class MoviesController < ApplicationController
       if params[:ratings] != nil
         session[:filter_rating] = params[:ratings]
         @ratings_to_show = params[:ratings].keys
-        @movies = Movie.with_ratings(@ratings_to_show, params[:sort])
+        @movies = Movie.with_ratings(@ratings_to_show, session[:filter_sort])
       else 
         if session[:filter_rating] != nil
           @ratings_to_show = session[:filter_rating].keys
-          @movies = Movie.with_ratings(@ratings_to_show, params[:sort])
+          @movies = Movie.with_ratings(@ratings_to_show, session[:filter_sort])
         end
       end
     end
